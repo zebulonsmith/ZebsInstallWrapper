@@ -5,7 +5,12 @@ Param (
     # Name of the app we're installing. Stick to characters that are legal for a filename.
     [Parameter(Mandatory=$true)]
     [string]
-    $ApplicationName
+    $ApplicationName,
+
+    # Log directory to write the log file. Defaults to the Config Manager client log directory.
+    [Parameter(Mandatory=$false)]
+    [string]
+    $dirLogs  = "$($env:windir)\ccm\logs"
 )
 
 #dotsource SoftwareInstall-HelperFunctions.ps1. We do it this way so that all of the PreInstallScripts have access to the Write-LogFile function and EvalResult class.
@@ -18,11 +23,10 @@ Try {
 }
 
 #set file path. Use the ccm log dir by default, fall back to windir\temp if it doesn't exist.
-if ( (Test-path "$($env:windir)\ccm\logs") -eq $true) {
-    $dirLogs = "$($env:windir)\ccm\logs"
+if ( (Test-path $dirLogs) -eq $true) {
     Write-Verbose "Directory $dirLogs exists."
 } else {
-    Write-Warning "$($env:windir)\ccm\logs does not exist. Using $($env:temp) instead."
+    Write-Warning "$dirLogs does not exist. Using $($env:temp) instead."
 	$dirLogs = "$($env:temp)"
 }
 

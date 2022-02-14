@@ -13,14 +13,14 @@ Class ScriptResult {
 
 	[bool]$ContinueOnError
 
-    PreInstallResult() {
+    ScriptResult() {
 		$this.Description = "Unspecified"
 		$this.Result = "UNSPECIFIED"
 		$this.ResultDetails = "Unspecified"
 		$this.ContinueOnError = $false
     }
 
-    PreInstallResult([string]$Description, [string]$Result, [string]$ResultDetails, [bool]$ContinueOnError) {
+    ScriptResult([string]$Description, [string]$Result, [string]$ResultDetails, [bool]$ContinueOnError) {
         $this.Description = $Description
 		$this.Result = $Result
 		$this.ResultDetails = $ResultDetails
@@ -129,15 +129,20 @@ function Write-LogFile
 <#
 .DESCRIPTION Launches a process and monitors it until the process ends. Returns the exit code.
 
-.PARAMETER Filename Name of the file that will be executed. Include the path to the file (c:\windows\system32\notepad.exe) if it is not in a location specified by $env:path.
+.PARAMETER Filename
+Name of the file that will be executed. Include the path to the file (c:\windows\system32\notepad.exe) if it is not in a location specified by $env:path.
 
-.PARAMETER WorkingDirectory Optionally specify a working directory for the process.
+.PARAMETER WorkingDirectory
+Optionally specify a working directory for the process.
 
-.PARAMETER Arguments Any arguments that need to be passed to the executable.
+.PARAMETER Arguments
+Any arguments that need to be passed to the executable.
 
-.PARAMETER UpdateSeconds Interval for writing status updates to the log file. One line will be written indicating the status of the running process every time this interval is reached.
+.PARAMETER UpdateSeconds
+Interval for writing status updates to the log file. One line will be written indicating the status of the running process every time this interval is reached.
 
-.PARAMETER logfile Path to the log file that will be used for status updates.
+.PARAMETER logfile
+Path to the log file that will be used for status updates.
 
 .EXAMPLE
 Start-InstallWrapperProcess -Filename "C:\windows\system32\notepad.exe"
@@ -209,5 +214,10 @@ Function Start-InstallWrapperProcess {
 	#exit
 	Write-Logfile -message "Process Exited on $($currentprocess.ExitTime) with Exit Code $($currentprocess.ExitCode)" -LogLevel Information -Path $logfile
 
-	Return $currentprocess.ExitCode
+	$exitdata = [PSCustomObject]@{
+		ExitCode = $Currentprocess.ExitCode
+		ExecutionTime = $ExecutionTime
+	}
+
+	Return $exitdata
 }

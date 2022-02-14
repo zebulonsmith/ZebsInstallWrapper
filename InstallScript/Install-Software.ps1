@@ -13,7 +13,7 @@ This script should be launched from Invoke-SoftwareInstall.ps1, not ran on its o
 
 Param (
     [Parameter(mandatory=$true)]
-    [STRING]$logfile
+    [STRING]$logfile #Passed to this script by Invoke-SoftwareInstall.ps1
 )
 
 <#Create an instance of the InstallResult class. This section shouldn't be changed#>
@@ -43,14 +43,27 @@ The only requirement is that an [InstallResult] object is returned.
 $MSIFile = "SomeFile.msi"
 $args = "/i $MSIFile /qn"
 
-$exitcode = Start-Installwrapperprocess -Filename "$($env:windir)\system32\msiexec.exe" -WorkingDirectory $PSScriptRoot -arguments $args -logfile $logfile
+
+<#
+Start-InstallWrapperProcess is defined in SoftwareInstall-HelperFunctions.ps1
+The following parameters should be passed:
+Filename - The executable that will perform the software install. This example uses msiexec.exe, it could also be a setup.exe or similar
+WorkingDirectory - The working directory for the installer executable
+Arguments - Any command line arguments to pass to the installer
+
+The object returned contains the following:
+ExitCode - The exit code returned by the invoked process
+ExecutionTime - Time in seconds that the process ran for
+
+#>
+$process = Start-Installwrapperprocess -Filename "$($env:windir)\system32\msiexec.exe" -WorkingDirectory $PSScriptRoot -arguments $args -logfile $logfile
 
 #endregion
 
 
 #This script must return an instance of [InstallResult]. It can be populated at any point, but should look something like the following
-$InstallResult.description = "Installing Software."
-$InstallResult.ExecutionDetails = "Installation completed in $executiontime seconds."
-$installResult.ReturnCode = $exitcode
+$InstallResult.description = "Installing Software." #Optional description. Will be passed to the log file.
+$InstallResult.ExecutionDetails = "Installation completed in $executiontime seconds." #Any additional details that should be logged
+$installResult.ReturnCode = $process.exitcode #The exit code to be returned. In this example, it is the exit code provided by msiexec.exe
 
 Return $InstallResult

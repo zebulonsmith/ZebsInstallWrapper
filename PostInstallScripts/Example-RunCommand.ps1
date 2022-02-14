@@ -47,10 +47,10 @@ Try {
 #This section should look relatively similar in every PreInstall script.
 
 #region ReturnResults
-$PostInstallResult.Description = "Evaluate whether or not $($env:windir) exists" #Describe what we're doing here
+$PostInstallResult.Description = "Applies Software License" #Describe what we're doing here
 $PostInstallResult.ResultDetails = $exitcode #TS Variable will be created using this name. It can be used later in the Task Sequence to decide whether or not to take an action.
 #$PostInstallResult.Result = $exitcode #SUCCESS or ERROR. Already set in the script above in this example
-$PostInstallResult.ContinueOnError = $false #Set to $true if the Invoke-SoftwareInstall script should continue if this script fails.
+$PostInstallResult.ContinueOnError = $true #Set to $true if the Invoke-SoftwareInstall script should continue if this script fails.
 
 
 #Finalize the log file and return the PostInstallResult to Invoke-SoftwareInstall.ps1
