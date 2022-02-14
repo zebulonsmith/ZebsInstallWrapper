@@ -23,14 +23,17 @@ Try {
     Write-LogFile -LogLevel Information -Path $logfile -Message "Creating ScriptResult Object"
     $PreInstallResult = [ScriptResult]::new()
 } Catch {
-    
+
     Write-LogFile -LogLevel Error -Path $logfile -Message "Unable to initialize an instance of the ScriptResult class. $($_.exception.message)"
     Throw "$_.Exception.Message"
 }
 #endregion
 
-<# Change the code in the region below to test for the desired condition. In this example, we're checking to see if 
-HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ exists.#>
+<# Change the code in the region below to test for the desired condition. In this example, we're checking to see if
+HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ exists.
+
+You could, for example, run in uninstallation process based on the contents of the registry key or take other action.
+#>
 #region CustomCode
 
 $regKey = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\"
@@ -39,7 +42,7 @@ Write-Logfile -loglevel Information -path $logfile "Evaluating the existence of 
 Try {
     Write-LogFile -LogLevel Information -Path $logfile -Message "Looking for existence of $($regKey)"
     $RegKeyExists = (Test-Path $regKey)
-} Catch {#We failed to test whether or not the dir exists, so return with a failure
+} Catch {#We failed to test whether or not the key exists, so return with a failure
     Write-LogFile -LogLevel Warning -Path $logfile -Message "Failed with $($_.Exception.Message)"
     $result = "ERROR"
     $resultDetails = "Unable to determine if $($regKey) exists."

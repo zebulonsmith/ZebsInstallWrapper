@@ -1,3 +1,5 @@
+#This script should not be modified.
+#All behavioral changes are done in the InstallScript, PreInstallScripts and PostInstallScripts folders
 
 Param (
     # Name of the app we're installing. Stick to characters that are legal for a filename.
@@ -15,13 +17,13 @@ Try {
 	Throw $_
 }
 
-#set file path. Use the ccm log dir by default, fall back to windir\temp if it doesn't exist. 
+#set file path. Use the ccm log dir by default, fall back to windir\temp if it doesn't exist.
 if ( (Test-path "$($env:windir)\ccm\logs") -eq $true) {
     $dirLogs = "$($env:windir)\ccm\logs"
     Write-Verbose "Directory $dirLogs exists."
 } else {
     Write-Warning "$($env:windir)\ccm\logs does not exist. Using $($env:temp) instead."
-	$dirLogs = "$($env:temp)"	
+	$dirLogs = "$($env:temp)"
 }
 
 $SanitizedAppName = $ApplicationName.split([System.IO.Path]::GetInvalidFileNameChars()) -join ''
@@ -61,7 +63,7 @@ if ( (test-path "$psscriptroot\PreInstallScripts") -eq $false) {
     $msg = "$psscriptroot\PreInstallScripts' doesn't exist."
     Write-LogFile -Message $msg -LogLevel Warning -Path $logfile
     throw [System.IO.FileNotFoundException]::New($msg)
-} 
+}
 
 $PreInstallScripts = Get-childitem "*.ps1" -path "$psscriptroot\PreInstallScripts" -Recurse
 
@@ -86,7 +88,7 @@ Foreach ($Script in $PreInstallScripts) {
         Throw $_
     }
 
-    
+
     #If the script returns an error, continue as needed or throw an error.
     if ($thisPreInstall.Result -ne "SUCCESS") {
         if ($thisPreInstall.ContinueOnError -eq $true) {
@@ -95,9 +97,9 @@ Foreach ($Script in $PreInstallScripts) {
             Write-LogFile -LogLevel Error -Message "Script $($script.FullName) returned $($thisPreInstall.Result). Reason: $($thisPreInstall.ResultDetails)" -path $logfile
             Throw $thisPreInstall.Result
         }
-    } 
-        
-    
+    }
+
+
     Write-LogFile -LogLevel Information -Path $logfile -Message "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`n"
 
 }
@@ -143,7 +145,7 @@ Foreach ($Script in $PostInstallScripts) {
         Throw $_
     }
 
-    
+
     #If the script returns an error, continue as needed or throw an error.
     if ($thisPostInstall.Result -ne "SUCCESS") {
         if ($thisPostInstall.ContinueOnError -eq $true) {
@@ -152,8 +154,8 @@ Foreach ($Script in $PostInstallScripts) {
             Write-LogFile -LogLevel Error -Message "Script $($script.FullName) returned $($thisPostInstall.Result). Reason: $($thisPostInstall.ResultDetails)" -path $logfile
             Throw $thisPostInstall.Result
         }
-    } 
-            
+    }
+
     Write-LogFile -LogLevel Information -Path $logfile -Message "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`n"
 
 }

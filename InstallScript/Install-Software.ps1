@@ -22,7 +22,7 @@ Try {
     Write-LogFile -LogLevel Information -Path $logfile -Message "Creating InstallResult Object"
     $InstallResult = [InstallResult]::new()
 } Catch {
-    
+
     Write-LogFile -LogLevel Error -Path $logfile -Message "Unable to initialize an instance of the InstallResult class. $($_.exception.message)"
     Throw "$_.Exception.Message"
 }
@@ -32,9 +32,9 @@ Try {
 #endregion
 
 <#
-Place code here to install the software. 
+Place code here to install the software.
 It's best to capture the return code of the installer when possible so that it can be returned to the ConfigMgr client
-The example below can be modified, or replaced with any other code. 
+The example below can be modified, or replaced with any other code.
 The only requirement is that an [InstallResult] object is returned.
 #>
 

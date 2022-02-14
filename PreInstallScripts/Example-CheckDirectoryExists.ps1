@@ -23,7 +23,7 @@ Try {
     Write-LogFile -LogLevel Information -Path $logfile -Message "Creating ScriptResult Object"
     $PreInstallResult = [ScriptResult]::new()
 } Catch {
-    
+
     Write-LogFile -LogLevel Error -Path $logfile -Message "Unable to initialize an instance of the ScriptResult class. $($_.exception.message)"
     Throw "$_.Exception.Message"
 }

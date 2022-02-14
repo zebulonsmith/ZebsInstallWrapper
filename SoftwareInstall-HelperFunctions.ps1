@@ -5,10 +5,10 @@
 Class ScriptResult {
 
     [string]$Description #Describe the purpose of this script
-	
+
 	[ValidateSet("SUCCESS","ERROR","UNSPECIFIED")]
 	[string]$Result
-	
+
 	[string]$ResultDetails
 
 	[bool]$ContinueOnError
@@ -66,7 +66,7 @@ Error - Write an error message to the log and write-error
 File path to write to. It will be created if it doesn't exist and appended otherwise.
 
 .PARAMETER BackupPath
-Optionally specify a backup path to write log files to in case the one specified by -Path does not exist or isn't writeable. 
+Optionally specify a backup path to write log files to in case the one specified by -Path does not exist or isn't writeable.
 Defaults to $env:temp, which should almost always be writeable.
 
 .EXAMPLE
@@ -85,18 +85,18 @@ function Write-LogFile
 		[Parameter(Mandatory = $false)]
 		[ValidateSet("Error", "Warning", "Information")]
 		[string]$LogLevel = "Information",
-		
+
 		[Parameter(Mandatory = $True)]
 		[string]$Path,
-		
+
 		[Parameter(Mandatory=$false)]
 		[string]$BackupPath = "$($env:temp)"
 	)
-	
+
 	#Get a pretty date string
 	$FormattedDate = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-	
-	# Write message to error, warning, or verbose pipeline and specify $LevelText 
+
+	# Write message to error, warning, or verbose pipeline and specify $LevelText
 	switch ($LogLevel)
 	{
 		'Error' {
@@ -112,7 +112,7 @@ function Write-LogFile
 			$LevelText = 'INFORMATION:'
 		}
 	}
-	
+
 	Try {
 		"$FormattedDate $LevelText $Message" | Out-File -FilePath $Path -Append
 	} catch {
@@ -122,7 +122,7 @@ function Write-LogFile
 		"$FormattedDate $LevelText $Message" | Out-File -FilePath $BackupFile -Append
 	}
 
-	
+
 }
 
 
@@ -181,7 +181,7 @@ Function Start-InstallWrapperProcess {
 	$processinfo.CreateNoWindow = $true
 
 	Write-LogFile -Message "Executing: $($processinfo.filename) `n   Arguments: $($processinfo.arguments) `n   WorkingDirectory: $($processInfo.WorkingDirectory)" -LogLevel Information -Path $logfile
-	
+
 	$currentprocess = New-Object System.Diagnostics.Process
 	$currentprocess.StartInfo = $processinfo
 	$currentprocess.Start() | out-null
@@ -203,7 +203,7 @@ Function Start-InstallWrapperProcess {
 				if ($currentprocess.responding -eq $false) {
 					Write-logfile -Message "     Process is not responding." -LogLevel Warning -Path $logfile
 				}
-			}			
+			}
 	}
 
 	#exit

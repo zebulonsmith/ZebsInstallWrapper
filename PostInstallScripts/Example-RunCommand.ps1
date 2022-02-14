@@ -1,5 +1,5 @@
 <#
-.DESCRIPTION 
+.DESCRIPTION
 The scripts in the EvalScripts directory can be used to ensure that a condition exists, uninstall old versions of software, verify that a device is healthy, etc.
 They should all return an instance of the [InstallResult] class defined in SoftwareInstallHelperFunctions.ps1.
 THis example checks to see if $env:windir exists.
@@ -21,14 +21,16 @@ Param (
 #region DefineClass
 Try {
     Write-LogFile -LogLevel Information -Path $logfile -Message "Creating PostInstallResult Object"
-    $PostInstallResult = [criptResult]::new()
+    $PostInstallResult = [scriptResult]::new()
 } Catch {
-    
+
     Write-LogFile -LogLevel Error -Path $logfile -Message "Unable to initialize an instance of the PreInstallResult class. $($_.exception.message)"
     Throw "$_.Exception.Message"
 }
 #endregion
 
+#region Post Install Tasks
+#Add code here for your post install task. Be sure to update the scriptresult object
 $File = "SomeFile.exe"
 $WorkingDir = "C:\Program Files\SoftwareThatNeedsLicensed\"
 $args = "/activate /licensekey:whoopdydoodahnobodylikesthese"
@@ -39,9 +41,11 @@ Try {
 } Catch {
     $PostInstallResult.Result = "ERROR"
 }
+#endregion
 
 #Always be sure to return an object with the results in it. Edit the values of these variables as needed.
 #This section should look relatively similar in every PreInstall script.
+
 #region ReturnResults
 $PostInstallResult.Description = "Evaluate whether or not $($env:windir) exists" #Describe what we're doing here
 $PostInstallResult.ResultDetails = $exitcode #TS Variable will be created using this name. It can be used later in the Task Sequence to decide whether or not to take an action.
